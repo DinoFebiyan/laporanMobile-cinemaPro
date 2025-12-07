@@ -1,7 +1,7 @@
 
 = Arsitektur Backend
 
-Dikerjakan oleh Backend Architect[cite: 23].
+Dikerjakan oleh Backend Engineer & Data Seeder[cite: 23].
 
 == Struktur Database (Firestore)
 Menggunakan 3 Collection utama: `Users`, `Products`, dan `Transactions`[cite: 13, 15, 17].

@@ -1,18 +1,14 @@
 = Pendahuluan & Pembagian Kerja
 
 == Deskripsi Aplikasi
-Aplikasi Smart E-Kantin ini dibangun menggunakan Flutter dengan arsitektur yang memisahkan logic, UI, dan backend services.
+CinemaPro adalah aplikasi pemesanan tiket bioskop berbasis Flutter dengan integrasi Firebase, mendukung multi-platform, dan memiliki sistem autentikasi yang aman.
 
 == Tabel Pembagian Tanggung Jawab
 Berikut adalah detail pembagian tugas sesuai instruksi ujian:
 
-== Tabel Pembagian Tanggung Jawab (sementara)
-
-Berikut adalah ringkasan pembagian tugas (sementara) yang dapat diperbaiki nanti:
-
 *Anggota 1*: Backend — Firebase Setup, Data Seeding — (inisial: ani)
 
-*Anggota 2*: UI Engineer — Slicing Login & Home — (inisial: budi)
+*Anggota 2*: Frontend Engineer — Ui Home & Ui Detail — (inisial: Dino)
 
 *Anggota 3*: Auth & Nav — Login Logic & Routing — (inisial: citra)
 

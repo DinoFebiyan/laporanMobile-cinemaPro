@@ -1,9 +1,18 @@
-= Implementasi Antarmuka & Auth
+= Implementasi UI Home & Detail
 
-Dikerjakan oleh UI Engineer dan Auth Controller[cite: 28, 33].
+Dikerjakan oleh Frontend Engineer (Home Module) //[cite: 28, 33].
 
-== Halaman Login & Register
-Validasi form diterapkan: Password minimal 6 karakter dan Email wajib domain kampus[cite: 36].
+== UI Home
+ Membuat tampilan Grid Film (SliverGridDelegate).     //[cite: 36].
+ 
+ Menggunakan widget Hero
+pada gambar poster agar ada animasi saat pindah ke detail. 
 
-== Navigasi
-Menggunakan `Navigator.pushReplacement` untuk routing antar halaman[cite: 34].
+==  UI Detail
+Menampilkan info film.     //[cite: 34].
+
+Tombol ”Book Ticket” melayang (Floating Action
+Button) di bawah. 
+
+==  Constraint
+Layout harus responsif di HP kecil maupun besar.

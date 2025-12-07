@@ -1,6 +1,6 @@
-= State Management & Logic
+= State  Management & Logic
 
-Dikerjakan oleh Transaction Logic Specialist[cite: 37].
+Dikerjakan oleh Logic Controller (Seat Matrix Module)[cite: 37].
 
 == State Keranjang
 State management menggunakan (Provider/Bloc/GetX) untuk fitur *Add to Cart* dan *Remove from Cart*[cite: 38, 39].

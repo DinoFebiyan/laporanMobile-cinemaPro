@@ -4,26 +4,26 @@
 
 // Data Kelompok (Sesuaikan dengan peran di soal)
 #let members_data = (
-  (name: "Nama Mhs 1", nim: "NIM001", role: "Backend Architect"), // [cite: 23]
-  (name: "Nama Mhs 2", nim: "NIM002", role: "UI Engineer"),       // [cite: 28]
-  (name: "Nama Mhs 3", nim: "NIM003", role: "Auth & Navigation"), // [cite: 33]
-  (name: "Nama Mhs 4", nim: "NIM004", role: "Transaction Logic"), // [cite: 37]
-  (name: "Nama Mhs 5", nim: "NIM005", role: "QA Lead & Integ."),  // [cite: 42]
+  (name: "Cheryl Aurellya Bangun Jaya", nim: "NIM001", role: "Backend Engineer & Data Seeder"), // [cite: 23]
+  (name: "Dino Febiyan", nim: "362458302043", role: "Frontend Engineer (Home Module)"),       // [cite: 28]
+  (name: "Rusydi Jabir Al Awfa", nim: "362458302044", role: "Frontend Engineer (Seat Matrix Module)"), // [cite: 33]
+  (name: "Mohammad Faisal", nim: "NIM004", role: "Logic Controller"), // [cite: 37]
+  (name: "Semua", nim: "", role: "QA Lead, Auth & Profile"),  // [cite: 42]
 )
 
 #show: doc => project(
-  title: "Laporan Final Project: Smart E-Kantin",
+  title: "Laporan Final Project: CinemaPro",
   semester: "Ganjil 2024/2025",
-  team_number: "05",
+  team_number: "07",
   members: members_data,
   doc
 )
 
 // Generate Cover
 #cover_page(
-  title: "Laporan Final Project: Smart E-Kantin",
+  title: "Laporan Final Project: CinemaPro",
   semester: "Ganjil 2024/2025",
-  team_number: "05",
+  team_number: "07",
   members: members_data
 )
 

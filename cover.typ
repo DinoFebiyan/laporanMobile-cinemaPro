@@ -9,7 +9,7 @@
   align(center)[
     #v(2em)
     // Ganti dengan logo kampus Anda jika ada
-    // #image("images/logo.png", width: 4cm) 
+    #image("images/logoPoliwangi.jpeg", width: 4cm) 
     #text(size: 16pt, weight: "bold")[POLITEKNIK NEGERI BANYUWANGI]
     #v(2em)
     
@@ -17,7 +17,7 @@
     #v(1em)
     #text(size: 14pt)[Mobile Application Development]
     #linebreak()
-    #text(size: 14pt)[Semester #semester] [cite: 4]
+    #text(size: 14pt)[Semester #semester] // [cite: 4]
     
     #v(4em)
     #text(size: 14pt, weight: "bold")[Disusun Oleh Kelompok #team_number:]

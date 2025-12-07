@@ -1,8 +1,12 @@
-= Integrasi & Git Branching
+= Auth & Profile
 
-Dikerjakan oleh QA Lead[cite: 42].
+Dikerjakan oleh Backend Engineer & Frontend Engineer[cite: 42].
 
-== Strategi Branching
+== Main
+
+== Auth Register
+
+== Auth Login
 Struktur branch yang digunakan sesuai instruksi[cite: 49, 50, 51, 52, 53]:
 - `feature/backend-setup`
 - `feature/ui-widgets`
@@ -11,3 +15,5 @@ Struktur branch yang digunakan sesuai instruksi[cite: 49, 50, 51, 52, 53]:
 - `feature/testing-docs`
 
 // Masukkan Screenshot Git Graph di sini
+
+== Profile
