@@ -36,7 +36,7 @@ class MyApp_dino extends StatelessWidget {
 }
 ```
 
-Nah, di initialScreen_dino saya membuat logika untuk menentukan halaman pertama yang muncul. Saya menggunakan StreamBuilder untuk mengecek status login pengguna. Kalau masih loading, tampil indikator bulat. Kalau pengguna sudah login, saya melakukan pengecekan data lagi di Firestore. Kalau datanya ada, langsung masuk ke HomePage_dino. Kalau datanya gagal dimuat, muncul pesan error. Sedangkan kalau pengguna belum login, otomatis diarahkan ke LoginPage_dino.
+Nah, di initialScreen_dino saya membuat logika untuk menentukan halaman pertama yang muncul. Disini saya menggunakan sharedpreferences yang menyimpan user id. Kalau masih loading, tampil indikator bulat. Kalau pengguna ada di sharedpreferences, maka langsung diarahkan ke HomePage_dino. Sedangkan kalau user id di sharedpreferences tidak ada, otomatis diarahkan ke LoginPage_dino.
 
 ```dart
 class initialScreen_dino extends StatelessWidget {
@@ -44,40 +44,20 @@ class initialScreen_dino extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+    return FutureBuilder<String?>(
+      future: SharedPreferences.getInstance().then(
+        (prefs) => prefs.getString('user_uid'),
+      ),
       builder: (context, snapshot) {
-        
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
-
-        if (snapshot.hasData && snapshot.data != null) {
-          return FutureBuilder<DocumentSnapshot>(
-            future: FirebaseFirestore.instance
-                .collection('users')
-                .doc(snapshot.data!.uid)
-                .get(),
-            
-            builder: (context, userSnapshot) {
-              
-              if (userSnapshot.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              }
-
-              if (userSnapshot.hasData && userSnapshot.data!.exists) {
-                return HomePage_dino();
-              } else {
-                return const Scaffold(
-                  body: Center(child: Text('Gagal memuat data user')),
-                );
-              }
-            },
-          );
+        if (snapshot.hasData &&
+            snapshot.data != null &&
+            snapshot.data!.isNotEmpty) {
+          return const HomePage_dino();
         }
         return const LoginPage_dino();
       },
@@ -174,27 +154,7 @@ class _LoginPageState_dino extends State<LoginPage_dino> {
 ```
 
 
-Selain itu, saya menambahkan logika agar ketika tombol *Login* ditekan, aplikasi terlebih dahulu memvalidasi form. Jika valid, sistem akan mencoba masuk menggunakan `FirebaseAuth.signInWithEmailAndPassword`. Selama proses ini berlangsung, tombol login diganti dengan indikator loading agar pengguna tahu bahwa proses sedang berjalan. Jika login berhasil, muncul pesan *Login berhasil* dengan warna hijau, lalu pengguna diarahkan ke halaman utama `HomePage_dino`. Sebaliknya, jika login gagal, sistem menampilkan pesan error berwarna merah sesuai dengan alasan kegagalan dari Firebase.  
-
-#image("../images/loginEror.png", width: 50%)
-
-```dart
-  _isLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _login_dino,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                      ),
-                      child: const Text('Login'),
-                    ),
-
-              const SizedBox(height: 12),
-
-Future<void> _login_dino() async {
+Selain itu, saya menambahkan logika agar ketika tombol *Login* ditekan, aplikasi terlebih dahulu memvalidasi form. Jika valid, maka saya akan memanggil fungsi finduser yang sebelumnya sudah dibuat oleh jabir. Selama proses ini berlangsung, tombol login diganti dengan indikator loading agar pengguna tahu bahwa proses sedang berjalan. Jika login berhasil, muncul pesan *Login berhasil* dengan warna hijau, lalu pengguna diarahkan ke halaman utama `HomePage_dino` dan data login pengguna tersebut juga saya simpan di sharedpreferences yaitu uid nya. Sebaliknya, jika login gagal, sistem menampilkan pesan error berwarna merahFuture<void> _login_dino() async {
   if (!_formKey.currentState!.validate()) {
     return;
   }
@@ -204,30 +164,47 @@ Future<void> _login_dino() async {
   });
 
   try {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text,
+    // Use your custom service to find and verify user
+    UserService userService = UserService();
+    UserModelCheryl? user = await userService.findUserByEmailAndPassword(
+      emailController.text.trim(),
+      passwordController.text,
     );
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login berhasil'),
-          backgroundColor: Colors.green,
-        ),
-      );
+    if (user != null) {
+      final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user_uid', user.uid);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage_dino()),
-      );
+        if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login berhasil'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Navigate to home page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage_dino()),
+        );
+      }
+    } else {
+      // Login failed
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Email atau password salah'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
-
-  } on FirebaseAuthException catch (e) {
+  } catch (e) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Login gagal: ${e.message}'),
+          content: Text('Login gagal: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
