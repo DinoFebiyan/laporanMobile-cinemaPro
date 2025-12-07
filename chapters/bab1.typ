@@ -6,14 +6,18 @@ CinemaPro adalah aplikasi pemesanan tiket bioskop berbasis Flutter dengan integr
 == Tabel Pembagian Tanggung Jawab
 Berikut adalah detail pembagian tugas sesuai instruksi ujian:
 
-*Anggota 1*: Backend — Firebase Setup, Data Seeding — (inisial: ani)
+== Tabel Pembagian Tanggung Jawab (sementara)
 
-*Anggota 2*: Frontend Engineer — Ui Home & Ui Detail — (inisial: Dino)
+Berikut adalah ringkasan pembagian tugas (sementara) yang dapat diperbaiki nanti:
 
-*Anggota 3*: Auth & Nav — Login Logic & Routing — (inisial: citra)
+*Anggota 1*: Backend Engineer & Data Seeder — Cheryl Aurellya Bangun Jaya
 
-*Anggota 4*: Logic — Cart State & Discount — (inisial: dani)
+*Anggota 2*: Frontend Engineer (Home Module) — Dino Febiyan
 
-*Anggota 5*: QA Lead — Testing & Merge — (inisial: eka)
+*Anggota 3*: Frontend Engineer (Seat Matrix Module) — Rusydi Jabir Al Awfa
+
+*Anggota 4*: Logic Controller (The Brain) — Mohammad Faisal
+
+*Anggota 5*: QA Lead, Auth & Profile — Semua anggota
 
 // TODO: restore as a proper `table(...)` once parsing issues are resolved
