@@ -10,7 +10,7 @@ A.Collection: Users
 Menyimpan data profil pengguna 
 Field name  Tipe data   Deskripsi
 uid         String      Primary key
-email       String      Email pengguna (Validasi @student.univ.ac.id).
+email       String      Email pengguna (`Validasi @student.univ.ac.id`).
 username    String      Nama tampilan pengguna
 balance     Number(int) Saldo awal (Default: 0)
 password    String      Password pengguna
