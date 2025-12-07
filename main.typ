@@ -4,11 +4,11 @@
 
 // Data Kelompok (Sesuaikan dengan peran di soal)
 #let members_data = (
-  (name: "Dino Febiyan", nim: "NIM001", role: "Backend Engineer & Data Seeder."), // [cite: 23]
-  (name: "Cheryl Aurellya Bangun Jaya", nim: "NIM002", role: "Frontend Engineer (Home Module)."),       // [cite: 28]
+  (name: "Dino Febiyan", nim: "NIM001", role: "Frontend Engineer (Home Module)"), // [cite: 23]
+  (name: "Cheryl Aurellya Bangun Jaya", nim: "NIM002", role: "Backend Engineer & Data Seeder"),       // [cite: 28]
   (name: "Rusydi Jabir Al Awfa", nim: "362458302044", role: "Frontend Engineer (Seat Matrix Module)."), // [cite: 33]
   (name: "Mohammad Faisal", nim: "NIM004", role: "Logic Controller (The Brain)."), // [cite: 37]
-  (name: "Semua", nim: "", role: "QA Lead, Auth & Profile"),  // [cite: 42]
+ // (name: "Semua", nim: "", role: "QA Lead, Auth & Profile"),  // [cite: 42]
 )
 
 #show: doc => project(

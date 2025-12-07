@@ -17,7 +17,7 @@
     #v(1em)
     #text(size: 14pt)[Mobile Application Development]
     #linebreak()
-    #text(size: 14pt)[Semester #semester] [cite: 4]
+    #text(size: 14pt)[Semester #semester] // [cite: 4]
     
     #v(4em)
     #text(size: 14pt, weight: "bold")[Disusun Oleh Kelompok #team_number:]

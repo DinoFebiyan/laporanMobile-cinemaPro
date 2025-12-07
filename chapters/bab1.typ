@@ -10,14 +10,14 @@ Berikut adalah detail pembagian tugas sesuai instruksi ujian:
 
 Berikut adalah ringkasan pembagian tugas (sementara) yang dapat diperbaiki nanti:
 
-*Anggota 1*: Backend — Firebase Setup, Data Seeding — (inisial: ani)
+*Anggota 1*: Backend Engineer & Data Seeder — Cheryl Aurellya Bangun Jaya
 
-*Anggota 2*: UI Engineer — Slicing Login & Home — (inisial: budi)
+*Anggota 2*: Frontend Engineer (Home Module) — Dino Febiyan
 
-*Anggota 3*: Auth & Nav — Login Logic & Routing — (inisial: citra)
+*Anggota 3*: Frontend Engineer (Seat Matrix Module) — Rusydi Jabir Al Awfa
 
-*Anggota 4*: Logic — Cart State & Discount — (inisial: dani)
+*Anggota 4*: Logic Controller (The Brain) — Mohammad Faisal
 
-*Anggota 5*: QA Lead — Testing & Merge — (inisial: eka)
+*Anggota 5*: QA Lead, Auth & Profile — Semua anggota
 
 // TODO: restore as a proper `table(...)` once parsing issues are resolved
