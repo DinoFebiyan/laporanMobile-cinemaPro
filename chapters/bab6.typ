@@ -86,12 +86,192 @@ class initialScreen_dino extends StatelessWidget {
 ```
 
 == Auth Register
-Struktur branch yang digunakan sesuai instruksi[cite: 49, 50, 51, 52, 53]:
-- `feature/backend-setup`
-- `feature/ui-widgets`
-- `feature/auth-nav`
-- `feature/cart-state`
-- `feature/testing-docs`
+Pada bagian ini saya membuat sebuah halaman yang memungkinkan pengguna bisa mendaftarkan diri di aplikasi CinemaPro. yang mana nanti yang akan diinputkan adalah email, username, password, dan confirm password untuk konfirmasi apakah password yang diinputkan sama, disini saya juga menambahkan sistem validasi, seperti pada email, saya menambahkan aturan bahwa alamat harus menggunakan domain kampus `@student.univ.ac.id`, sehingga hanya mahasiswa yang bisa mendaftar dan masuk. Jika pengguna salah mengetik atau tidak mengisi, maka sistem langsung menampilkan pesan error dan border input berubah menjadi merah sebagai tanda visual. Hal yang sama juga berlaku pada password, di mana sistem memastikan password minimal enam karakter, dan jika tidak sesuai maka field akan ditandai dengan border merah, cuman disini saya menulis kodenya di file yang berbeda agar lebih rapih, bukan hanya sistem validasi, saya juga membuat sistem hashPassword untuk melakukan hashing password agar nantinya bisa digunakan untuk login.
+
+#image("../images/register-normal.png", width: 50%) 
+
+#image("../images/register-ditolak.png", width: 50%) 
+
+berikut adalah kodenya untuk emailValidator_jabir.dart untuk validasi email,username,password, dan confirm password
+```dart
+/// emailValidator_jabir.dart
+class EmailValidator {
+  /// Validates if an email is in the format required: @student.univ.ac.id
+  static bool isValidStudentEmail(String email) {
+    // Regex pattern to match emails ending with @student.univ.ac.id
+    RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@student\.univ\.ac\.id$');
+    return emailRegex.hasMatch(email);
+  }
+}
+
+/// Data structure for registration form validation (for UI validation)
+class RegistrationForm {
+  final String email;
+  final String username;
+  final String password;
+  final String confirmPassword;
+
+  RegistrationForm({
+    required this.email,
+    required this.username,
+    required this.password,
+    required this.confirmPassword,
+  });
+
+  /// Validates all registration form fields
+  String? validate() {
+    // Email validation
+    if (email.isEmpty) {
+      return 'Email is required';
+    }
+
+    if (!EmailValidator.isValidStudentEmail(email)) {
+      return 'Email must end with @student.univ.ac.id';
+    }
+
+    // Username validation
+    if (username.isEmpty) {
+      return 'Username is required';
+    }
+
+    if (username.length < 3) {
+      return 'Username must be at least 3 characters';
+    }
+
+    // Password validation
+    if (password.isEmpty) {
+      return 'Password is required';
+    }
+
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+
+    // Confirm password validation
+    if (password != confirmPassword) {
+      return 'Passwords do not match';
+    }
+
+    return null; // All validations passed
+  }
+}
+```
+
+berikut adalah kodenya untuk register-jabir.dart, yang didalamnya melakukan check apakah sesuai dengan validasi yang sudah dibuat, lalu membuat sistem menampilkan pesan error atau pesan berhasil disini, selain itu melakukan hashing password disini.
+```dart
+  //register-jabir.dart
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Check if email already exists
+      bool emailExists = await _userService.isEmailExists(_emailController.text.trim());
+      if (emailExists) {
+        throw Exception('email-already-in-use');
+      }
+
+      // Create user with hashed password in database
+      bool success = await _userService.createUserWithPassword(
+        email: _emailController.text.trim(),
+        username: _usernameController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      if (success) {
+        // Registration successful
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Registration successful!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Navigate back or to home screen
+        Navigator.pop(context);
+      } else {
+        throw Exception('Registration failed');
+      }
+    } on Exception catch (e) {
+      String errorMessage = 'Registration failed';
+
+      if (e.toString().contains('email-already-in-use')) {
+        errorMessage = 'This email is already registered';
+      } else {
+        errorMessage = e.toString();
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+```
+
+Selanjutnya saya juga menyediakan file khusus untuk melakukan hash password menggunakan dependensi crypto dan kuncinya juga sudah kita siapkan didalam .env.
+
+```dart
+// passwordHash_jabir.dart
+class PasswordHashUtil {
+  /// Hash a password using SHA256 algorithm with the project's secret key as salt
+  static Future<String> hashPassword(String password) async {
+    // Load the hash key from .env file
+    await dotenv.load(fileName: ".env");
+    String hashKey = dotenv.env['HASH_KEY'];
+
+    // Create salted password
+    String saltedPassword = password + hashKey;
+
+    // Hash using SHA256
+    var bytes = utf8.encode(saltedPassword);
+    var digest = sha256.convert(bytes);
+
+    print('Hashing password: $password -> ${digest.toString()}'); // Debug log
+    return digest.toString(); // Returns hex representation of the hash
+  }
+
+  /// Verify a password against its hash
+  static Future<bool> verifyPassword(String password, String hash) async {
+    try {
+      // Recompute the hash using the same parameters and compare
+      String computedHash = await hashPassword(password);
+      print('Verifying: computed=$computedHash, stored=$hash, match=${computedHash == hash}'); // Debug log
+
+      // Compare the computed hash with the stored hash
+      return computedHash == hash;
+    } catch (e) {
+      print('Error verifying password: $e');
+      return false;
+    }
+  }
+}
+```
+
+ini untuk kode .env nya
+
+```env
+HASH_KEY=ProjectNASA_Poliwangi_-_7878HAShPassWordiaxcc
+```
+
 
 == Auth Login
 Pada bagian login ini saya membuat sebuah halaman yang memungkinkan pengguna masuk ke aplikasi menggunakan akun yang sudah terdaftar di Firebase. Tampilan login ini terdiri dari dua input utama, yaitu email dan password, yang masing-masing dilengkapi dengan validasi. Untuk email, saya menambahkan aturan bahwa alamat harus menggunakan domain kampus `@student.univ.ac.id`, sehingga hanya mahasiswa yang bisa mendaftar dan masuk. Jika pengguna salah mengetik atau tidak mengisi, maka sistem langsung menampilkan pesan error dan border input berubah menjadi merah sebagai tanda visual. Hal yang sama juga berlaku pada password, di mana sistem memastikan password minimal enam karakter, dan jika tidak sesuai maka field akan ditandai dengan border merah.  
@@ -240,7 +420,6 @@ Future<void> _login_dino() async {
     }
   }
 }
-```
 
 
 Di bagian bawah halaman, saya juga menyediakan opsi bagi pengguna yang belum memiliki akun. Terdapat teks *Tidak memiliki akun?* dengan tombol *Register* yang akan mengarahkan pengguna ke halaman pendaftaran. Dengan cara ini, halaman login tidak hanya berfungsi untuk login saja, tetapi juga menjadi navigator bagi pengguna baru untuk membuat akun. 
