@@ -277,4 +277,171 @@ Row(
             ],
 ```
 
-== Profile
+== Profile ==
+Halaman profile untuk menampilkan identitas pengguna dan menampilkan riwayat transaksi.
+pertama,untuk bagaian header profil, saya menggunakan FutureBuilder untuk mengambil data detail pengguna (Username, Email dan saldo) dari collection users berdasarkan UID pengguna
+yang sedang login,kemudian data diambil dan di konversi menggunakan UserModelCheryl 
+FutureBuilder<DocumentSnapshot>(
+            future: FirebaseFirestore.instance
+                .collection('users')
+                .doc(_currentUserId) 
+                .get(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const LinearProgressIndicator();
+              }
+
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text("Data user tidak ditemukan di database"),
+                );
+              }
+
+              final userData = snapshot.data!.data() as Map<String, dynamic>;
+              final user = UserModelCheryl.fromMapCheryl(userData);
+
+              return Container(
+                color: Colors.blue,
+                padding: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
+                child: Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.person, size: 40, color: Colors.blue),
+                    ),
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.username,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          user.email,
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                              color: Colors.white24,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Text(
+                            "Saldo: Rp ${user.balance}",
+                            style: const TextStyle(
+                                color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+
+Kedua, untuk bagaian Riwayat Tiket, saya menggunakan StreamBuilder.Penggunaan Stream dipilih agar daftar tiket dapat 
+diperbarui secara real-time tanpa perlu me-refresh halaman jika ada transaksi baru,saya menerapkan query filtering menggunakan
+.where('user_id', isEqualTo: currentUserId) untuk memastikan pengguna hanya melihat tiket miliknya sendiri.
+
+Selain itu, sesuai spesifikasi teknis, saya mengimplementasikan library qr_flutter untuk meng generate QR CODE untuk secara otomatis berdasarkan booking_id dari setiap transaksi
+ Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('bookings')
+                  .where('user_id', isEqualTo: _currentUserId) 
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.movie_creation_outlined, size: 64, color: Colors.grey),
+                        SizedBox(height: 8),
+                        Text("Belum ada tiket yang dibeli.", style: TextStyle(color: Colors.grey)),
+                      ],
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    final doc = snapshot.data!.docs[index];
+                    final booking = BookingModelCheryl.fromMap_Cheryl(
+                        doc.data() as Map<String, dynamic>, doc.id);
+
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    booking.movieTitle,
+                                    style: const TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text("Kursi: ${booking.seats.join(', ')}"),
+                                  Text(
+                                    "Total: Rp ${booking.totalPrice}",
+                                    style: const TextStyle(
+                                        color: Colors.green, fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    "Tgl: ${booking.bookingDate.toString().substring(0, 10)}",
+                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // QR Code
+                            Column(
+                              children: [
+                                SizedBox(
+                                  width: 70,
+                                  height: 70,
+                                  child: QrImageView(
+                                    data: booking.bookingId,
+                                    version: QrVersions.auto,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                const Text("Scan Me", style: TextStyle(fontSize: 9)),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+#images("../images/HistoryPage.jpeg", width: 50%)
