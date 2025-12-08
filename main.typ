@@ -4,7 +4,7 @@
 
 // Data Kelompok (Sesuaikan dengan peran di soal)
 #let members_data = (
-  (name: "Cheryl Aurellya Bangun Jaya", nim: "NIM001", role: "Backend Engineer & Data Seeder"), // [cite: 23]
+  (name: "Cheryl Aurellya Bangun Jaya", nim: "362458302037", role: "Backend Engineer & Data Seeder"), // [cite: 23]
   (name: "Dino Febiyan", nim: "362458302043", role: "Frontend Engineer (Home Module)"),       // [cite: 28]
   (name: "Rusydi Jabir Al Awfa", nim: "362458302044", role: "Frontend Engineer (Seat Matrix Module)"), // [cite: 33]
   (name: "Mohammad Faisal", nim: "NIM004", role: "Logic Controller"), // [cite: 37]
