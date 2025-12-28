@@ -12,7 +12,7 @@ Sistem seat matrix terdiri dari beberapa komponen utama:
 - **SeatMatrixJabir**: StatefulWidget utama yang menangani logika pemilihan kursi dan interaksi dengan pengguna
 - **SeatStatus**: Enum yang mendefinisikan status kursi (available, selected, booked)
 
-#image("../images/seat-matrix.png", width: 50%)
+#image("../images/seat-matrix.jpg", width: 50%)
 
 === Implementasi Seat Item
 Berikut adalah implementasi dari SeatItemJabir widget:
